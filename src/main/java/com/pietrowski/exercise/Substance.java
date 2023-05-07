@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -13,11 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class Substance {
     private String indexNo;
-    private String internationalChemicalIdentification;
-    private String casNo;
+    private String intChemId;
     private String ecNo;
-    private List<String> hazardStatementCodes;
+    private String casNo;
     private List<String> hazardClasses;
+    private List<String> hazardStatementCodes;
 }
