@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -13,11 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Substance {
-    private String indexNo;
-    private String internationalChemicalIdentification;
-    private String casNo;
-    private String ecNo;
-    private List<String> hazardStatementCodes;
-    private List<String> hazardClasses;
+public class SubstanceUpdateEntry extends Substance {
+    private List<String> updatedHazardClasses;
+    private List<String> updatedHazardStatementCodes;
+    private LocalDateTime updateTime;
 }
