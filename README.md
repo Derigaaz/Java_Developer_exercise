@@ -1,2 +1,2 @@
 # Java Developer exercise
-Exercise for a job position at IT Software
+Exercise for a Java Developer position
