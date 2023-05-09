@@ -1,17 +1,27 @@
 package com.pietrowski.exercise;
 
+import com.oracle.svm.core.annotate.Inject;
+import com.pietrowski.exercise.model.Substance;
+
+import com.pietrowski.exercise.model.dao.SubstanceDAO;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class InputProcessingService {
 
-    public static List<Substance> createListOfSubstancesFromWorkbook(Workbook workbook) {
+    @Autowired
+    SubstanceDAO substanceDAO;
+
+    public List<Substance> createListOfSubstancesFromWorkbook(Workbook workbook) {
         Sheet sheet = workbook.getSheet("ATP_18");
         List<Substance> substances = new ArrayList<>();
         int firstRow = sheet.getFirstRowNum();
@@ -19,7 +29,7 @@ public class InputProcessingService {
         for (int index = firstRow + 6; index <= lastRow; index++) {
             Optional<Row> row = Optional.ofNullable(sheet.getRow(index));
             Optional<Substance> rowSubstance = row.map(InputProcessingService::readSubstanceValues);
-            rowSubstance.ifPresent(substances::add);
+            rowSubstance.ifPresent(substance -> substanceDAO.create(substance));
         }
         return substances;
     }

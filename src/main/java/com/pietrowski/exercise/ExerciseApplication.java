@@ -1,6 +1,9 @@
 package com.pietrowski.exercise;
 
+import com.oracle.svm.core.annotate.Inject;
+import com.pietrowski.exercise.model.Substance;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,6 +21,9 @@ import static java.lang.System.exit;
 
 @SpringBootApplication
 public class ExerciseApplication implements CommandLineRunner {
+
+    @Autowired
+    InputProcessingService inputProcessingService;
 
     public static void main(String[] args) throws Exception {
         SpringApplication app = new SpringApplication(ExerciseApplication.class);
@@ -40,7 +46,7 @@ public class ExerciseApplication implements CommandLineRunner {
                     String filePath = reader.readLine();
                     FileInputStream inputStream = ExcelProcessingService.openInputStream(filePath);
                     Optional<Workbook> workBook = Optional.ofNullable(ExcelProcessingService.getWorkBookFromStream(inputStream));
-                    List<Substance> substances = workBook.map((InputProcessingService::createListOfSubstancesFromWorkbook)).orElseGet(ArrayList::new);
+                    List<Substance> substances = workBook.map(workbook -> inputProcessingService.createListOfSubstancesFromWorkbook(workbook)).orElseGet(ArrayList::new);
                     substances.stream().map(Substance::toString).forEachOrdered(System.out::println);
                     assert inputStream != null;
                     ExcelProcessingService.closeInputStream(inputStream);
