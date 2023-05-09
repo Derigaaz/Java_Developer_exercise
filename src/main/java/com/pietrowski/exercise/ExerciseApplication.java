@@ -1,6 +1,5 @@
 package com.pietrowski.exercise;
 
-import com.oracle.svm.core.annotate.Inject;
 import com.pietrowski.exercise.model.Substance;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;

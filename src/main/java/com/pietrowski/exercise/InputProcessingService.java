@@ -1,8 +1,6 @@
 package com.pietrowski.exercise;
 
-import com.oracle.svm.core.annotate.Inject;
 import com.pietrowski.exercise.model.Substance;
-
 import com.pietrowski.exercise.model.dao.SubstanceDAO;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
