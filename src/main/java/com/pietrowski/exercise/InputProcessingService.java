@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -21,13 +22,19 @@ public class InputProcessingService {
 
     public List<Substance> createListOfSubstancesFromWorkbook(Workbook workbook) {
         Sheet sheet = workbook.getSheet("ATP_18");
-        List<Substance> substances = new ArrayList<>();
+        List<Substance> substances = substanceDAO.findAll();
         int firstRow = sheet.getFirstRowNum();
         int lastRow = sheet.getLastRowNum();
         for (int index = firstRow + 6; index <= lastRow; index++) {
             Optional<Row> row = Optional.ofNullable(sheet.getRow(index));
             Optional<Substance> rowSubstance = row.map(InputProcessingService::readSubstanceValues);
-            rowSubstance.ifPresent(substance -> substanceDAO.create(substance));
+//            rowSubstance.ifPresent(substance -> substanceDAO.update(substance));
+            if(rowSubstance.isPresent()) {
+                Substance updatedSubstance = substanceDAO.update(rowSubstance.get());
+                if (!(updatedSubstance.equals(rowSubstance.get()))) {
+
+                }
+            }
         }
         return substances;
     }

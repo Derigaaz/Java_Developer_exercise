@@ -22,7 +22,9 @@ import java.util.List;
 public class SubstanceUpdateEntry {
     @Id
     private String indexNo;
-    private List<String> updatedHazardClasses;
-    private List<String> updatedHazardStatementCodes;
+    private List<String> addedHazardClasses;
+    private List<String> removedHazardClasses;
+    private List<String> addedHazardStatementCodes;
+    private List<String> removedHazardStatementCodes;
     private LocalDateTime updateTime;
 }
