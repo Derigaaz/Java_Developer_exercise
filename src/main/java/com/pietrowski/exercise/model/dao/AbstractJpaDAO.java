@@ -2,6 +2,9 @@ package com.pietrowski.exercise.model.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.transaction.Transactional;
 
 import java.io.Serializable;
@@ -15,15 +18,19 @@ public abstract class AbstractJpaDAO<T extends Serializable> {
     private Class<T> clazz;
 
     public final void setClazz(Class<T> clazzToSet) {
-        this.clazz = clazzToSet;
+        clazz = clazzToSet;
     }
 
-    public T findOne(long id) {
+    public T findById(String id) {
         return entityManager.find(clazz, id);
     }
 
     public List<T> findAll() {
-        return entityManager.createQuery("from " + clazz.getName()).getResultList();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(clazz);
+        cq.distinct(true);
+        TypedQuery<T> query = entityManager.createQuery(cq);
+        return query.getResultList();
     }
 
     public void create(T entity) {
@@ -38,8 +45,13 @@ public abstract class AbstractJpaDAO<T extends Serializable> {
         entityManager.remove(entity);
     }
 
-    public void deleteById(long entityId) {
-        T entity = findOne(entityId);
+    public void deleteById(String entityId) {
+        T entity = findById(entityId);
         delete(entity);
+    }
+
+    public void deleteAll(){
+        List<T> entities = findAll();
+        entities.forEach(this::delete);
     }
 }
