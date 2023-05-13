@@ -24,7 +24,7 @@ public class ExerciseApplication implements CommandLineRunner {
     @Autowired
     InputProcessingService inputProcessingService;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication app = new SpringApplication(ExerciseApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
