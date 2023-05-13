@@ -44,11 +44,12 @@ public class ExerciseApplication implements CommandLineRunner {
                     System.out.println("Please enter path to the file you wish to process.");
                     String filePath = reader.readLine();
                     FileInputStream inputStream = ExcelProcessingService.openInputStream(filePath);
-                    Optional<Workbook> workBook = Optional.ofNullable(ExcelProcessingService.getWorkBookFromStream(inputStream));
-                    List<Substance> substances = workBook.map(workbook -> inputProcessingService.createListOfSubstancesFromWorkbook(workbook)).orElseGet(ArrayList::new);
-                    substances.stream().map(Substance::toString).forEachOrdered(System.out::println);
-                    assert inputStream != null;
-                    ExcelProcessingService.closeInputStream(inputStream);
+                    if(inputStream != null) {
+                        Optional<Workbook> workBook = Optional.ofNullable(ExcelProcessingService.getWorkBookFromStream(inputStream));
+                        List<Substance> substances = workBook.map(workbook -> inputProcessingService.createListOfSubstancesFromWorkbook(workbook)).orElseGet(ArrayList::new);
+                        substances.stream().map(Substance::toString).forEachOrdered(System.out::println);
+                        ExcelProcessingService.closeInputStream(inputStream);
+                    }
                 }
                 default -> System.out.println("Unrecognized operation.");
             }
