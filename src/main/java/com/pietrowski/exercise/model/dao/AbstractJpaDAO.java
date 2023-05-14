@@ -19,10 +19,6 @@ public abstract class AbstractJpaDAO<T extends Serializable> {
         clazz = clazzToSet;
     }
 
-    public T findById(String id) {
-        return entityManager.find(clazz, id);
-    }
-
     public List<T> findAll() {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(clazz);
@@ -44,12 +40,7 @@ public abstract class AbstractJpaDAO<T extends Serializable> {
         entityManager.remove(entity);
     }
 
-    public void deleteById(String entityId) {
-        T entity = findById(entityId);
-        delete(entity);
-    }
-
-    public void deleteAll(){
+    public void deleteAll() {
         List<T> entities = findAll();
         entities.forEach(this::delete);
     }
