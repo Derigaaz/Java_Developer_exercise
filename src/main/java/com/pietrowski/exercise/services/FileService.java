@@ -1,4 +1,4 @@
-package com.pietrowski.exercise;
+package com.pietrowski.exercise.services;
 
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -9,7 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 @UtilityClass
-public class ExcelProcessingService {
+public class FileService {
 
     public static FileInputStream openInputStream(String filePath) {
         File file = new File(filePath);

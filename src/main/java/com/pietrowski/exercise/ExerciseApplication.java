@@ -1,9 +1,13 @@
 package com.pietrowski.exercise;
 
-import com.pietrowski.exercise.model.Substance;
-import com.pietrowski.exercise.model.SubstanceUpdateEntry;
+import com.pietrowski.exercise.model.entities.Substance;
+import com.pietrowski.exercise.model.entities.SubstanceUpdateEntry;
 import com.pietrowski.exercise.model.dao.SubstanceDAO;
 import com.pietrowski.exercise.model.dao.SubstanceUpdateEntryDAO;
+import com.pietrowski.exercise.model.services.SubstanceService;
+import com.pietrowski.exercise.model.services.SubstanceUpdateEntryService;
+import com.pietrowski.exercise.services.FileService;
+import com.pietrowski.exercise.services.WorkbookService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
@@ -32,13 +36,13 @@ public class ExerciseApplication implements CommandLineRunner {
             """;
 
     @Autowired
-    InputProcessingService inputProcessingService;
+    WorkbookService workbookService;
 
     @Autowired
-    SubstanceDAO substanceDAO;
+    SubstanceService substanceService;
 
     @Autowired
-    SubstanceUpdateEntryDAO substanceUpdateEntryDAO;
+    SubstanceUpdateEntryService substanceUpdateEntryService;
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(ExerciseApplication.class);
@@ -59,18 +63,18 @@ public class ExerciseApplication implements CommandLineRunner {
                 case "input" -> {
                     System.out.println("Please enter path to the file you wish to process.");
                     String filePath = reader.readLine();
-                    FileInputStream inputStream = ExcelProcessingService.openInputStream(filePath);
+                    FileInputStream inputStream = FileService.openInputStream(filePath);
                     if(inputStream != null) {
-                        Optional<Workbook> workBook = Optional.ofNullable(ExcelProcessingService.getWorkBookFromStream(inputStream));
-                        workBook.ifPresent(workbook -> inputProcessingService.createListOfSubstancesFromWorkbook(workbook));
-                        ExcelProcessingService.closeInputStream(inputStream);
+                        Optional<Workbook> workBook = Optional.ofNullable(FileService.getWorkBookFromStream(inputStream));
+                        workBook.ifPresent(workbook -> workbookService.processWorkbook(workbook));
+                        FileService.closeInputStream(inputStream);
                     }
                 }
-                case "substances" -> substanceDAO.findAll().stream().map(Substance::toString).forEachOrdered(System.out::println);
-                case "updates" -> substanceUpdateEntryDAO.findAll().stream().map(SubstanceUpdateEntry::toString).forEachOrdered(System.out::println);
+                case "substances" -> substanceService.findAll().stream().map(Substance::toString).forEachOrdered(System.out::println);
+                case "updates" -> substanceUpdateEntryService.findAll().stream().map(SubstanceUpdateEntry::toString).forEachOrdered(System.out::println);
                 case "clear" -> {
-                    substanceDAO.deleteAll();
-                    substanceUpdateEntryDAO.deleteAll();
+                    substanceUpdateEntryService.deleteAll();
+                    substanceService.deleteAll();
                 }
                 default -> System.out.println("Unrecognized operation.");
             }

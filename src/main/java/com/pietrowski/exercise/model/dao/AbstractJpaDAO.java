@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
 
-@Transactional
 public abstract class AbstractJpaDAO<T extends Serializable> {
 
     @PersistenceContext
