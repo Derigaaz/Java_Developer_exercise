@@ -18,15 +18,16 @@ import static java.lang.System.exit;
 
 @Service
 public class MenuService {
-    private static final String MAIN_MENU = """
+    public static final String PATH_TO_FILE_REQUEST_MESSAGE = "Please enter path to the file you wish to process.";
+    private static final String MAIN_MENU_MESSAGE = """
             Type command to execute:
             'substances': displays all substances currently in database
             'updates': displays history of all updates
             'input': allows to input a new Excel file to process
+            'output': allows to output database values to a new Excel file
             'clear': clears database entries - THIS ACTION CANNOT BE REVERTED!
             'quit': exits the application
             """;
-
     @Autowired
     WorkbookService workbookService;
 
@@ -39,7 +40,7 @@ public class MenuService {
 
     public void runMainMenu() throws IOException {
         while (true) {
-            System.out.println(MAIN_MENU);
+            System.out.println(MAIN_MENU_MESSAGE);
             String operation = reader.readLine();
             switch (operation) {
                 case "quit" -> exit(0);
@@ -47,9 +48,15 @@ public class MenuService {
                 case "substances" -> executeSubstancesDisplay();
                 case "updates" -> executeUpdatesDisplay();
                 case "clear" -> executeDatabaseClearing();
+                case "output" -> executeOutputCommand();
                 default -> System.out.println("Unrecognized operation.");
             }
         }
+    }
+
+    private void executeOutputCommand() {
+        Workbook workbook = workbookService.createWorkbook(substanceUpdateEntryService.findAll());
+        FileService.writeNewExcelFile(workbook);
     }
 
     private void executeDatabaseClearing() {
@@ -66,7 +73,7 @@ public class MenuService {
     }
 
     private void executeInputCommand() throws IOException {
-        System.out.println("Please enter path to the file you wish to process.");
+        System.out.println(PATH_TO_FILE_REQUEST_MESSAGE);
         String filePath = reader.readLine();
         FileInputStream inputStream = FileService.openInputStream(filePath);
         if (inputStream != null) {
