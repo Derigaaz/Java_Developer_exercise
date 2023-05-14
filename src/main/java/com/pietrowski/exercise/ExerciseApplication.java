@@ -15,14 +15,21 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static java.lang.System.exit;
 
 @SpringBootApplication
 public class ExerciseApplication implements CommandLineRunner {
+
+    private static final String MAIN_MENU = """
+            Type command to execute:
+            'substances': displays all substances currently in database
+            'updates': displays history of all updates
+            'input': allows to input a new Excel file to process
+            'clear': clears database entries - THIS ACTION CANNOT BE REVERTED!
+            'quit': exits the application
+            """;
 
     @Autowired
     InputProcessingService inputProcessingService;
@@ -42,9 +49,7 @@ public class ExerciseApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws IOException {
         while (true) {
-            System.out.println("Type 'substances' to display all substances currently in database or 'updates' to display history of all updates");
-            System.out.println("Type 'quit' to exit the application or 'input' to input a new Excel file to process.");
-            System.out.println("Type 'clear' to clear database entries - THIS ACTION CANNOT BE REVERTED!");
+            System.out.println(MAIN_MENU);
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(System.in));
             String operation;
@@ -57,8 +62,7 @@ public class ExerciseApplication implements CommandLineRunner {
                     FileInputStream inputStream = ExcelProcessingService.openInputStream(filePath);
                     if(inputStream != null) {
                         Optional<Workbook> workBook = Optional.ofNullable(ExcelProcessingService.getWorkBookFromStream(inputStream));
-                        List<Substance> substances = workBook.map(workbook -> inputProcessingService.createListOfSubstancesFromWorkbook(workbook)).orElseGet(ArrayList::new);
-                        substances.stream().map(Substance::toString).forEachOrdered(System.out::println);
+                        workBook.ifPresent(workbook -> inputProcessingService.createListOfSubstancesFromWorkbook(workbook));
                         ExcelProcessingService.closeInputStream(inputStream);
                     }
                 }
