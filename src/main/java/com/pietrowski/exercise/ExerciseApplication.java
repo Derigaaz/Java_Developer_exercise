@@ -2,8 +2,6 @@ package com.pietrowski.exercise;
 
 import com.pietrowski.exercise.model.entities.Substance;
 import com.pietrowski.exercise.model.entities.SubstanceUpdateEntry;
-import com.pietrowski.exercise.model.dao.SubstanceDAO;
-import com.pietrowski.exercise.model.dao.SubstanceUpdateEntryDAO;
 import com.pietrowski.exercise.model.services.SubstanceService;
 import com.pietrowski.exercise.model.services.SubstanceUpdateEntryService;
 import com.pietrowski.exercise.services.FileService;
@@ -64,14 +62,16 @@ public class ExerciseApplication implements CommandLineRunner {
                     System.out.println("Please enter path to the file you wish to process.");
                     String filePath = reader.readLine();
                     FileInputStream inputStream = FileService.openInputStream(filePath);
-                    if(inputStream != null) {
+                    if (inputStream != null) {
                         Optional<Workbook> workBook = Optional.ofNullable(FileService.getWorkBookFromStream(inputStream));
                         workBook.ifPresent(workbook -> workbookService.processWorkbook(workbook));
                         FileService.closeInputStream(inputStream);
                     }
                 }
-                case "substances" -> substanceService.findAll().stream().map(Substance::toString).forEachOrdered(System.out::println);
-                case "updates" -> substanceUpdateEntryService.findAll().stream().map(SubstanceUpdateEntry::toString).forEachOrdered(System.out::println);
+                case "substances" ->
+                        substanceService.findAll().stream().map(Substance::toString).forEachOrdered(System.out::println);
+                case "updates" ->
+                        substanceUpdateEntryService.findAll().stream().map(SubstanceUpdateEntry::toString).forEachOrdered(System.out::println);
                 case "clear" -> {
                     substanceUpdateEntryService.deleteAll();
                     substanceService.deleteAll();
