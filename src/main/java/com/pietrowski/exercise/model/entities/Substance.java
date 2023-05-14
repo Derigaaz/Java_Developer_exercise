@@ -1,4 +1,4 @@
-package com.pietrowski.exercise.model;
+package com.pietrowski.exercise.model.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

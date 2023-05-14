@@ -1,6 +1,6 @@
 package com.pietrowski.exercise.model.dao;
 
-import com.pietrowski.exercise.model.Substance;
+import com.pietrowski.exercise.model.entities.Substance;
 import org.springframework.stereotype.Repository;
 
 @Repository

@@ -1,4 +1,4 @@
-package com.pietrowski.exercise.model;
+package com.pietrowski.exercise.model.entities;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
