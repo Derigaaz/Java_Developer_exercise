@@ -28,6 +28,7 @@ public abstract class AbstractJpaDAO<T extends Serializable> {
     public List<T> findAll() {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(clazz);
+        cq.from(clazz);
         cq.distinct(true);
         TypedQuery<T> query = entityManager.createQuery(cq);
         return query.getResultList();

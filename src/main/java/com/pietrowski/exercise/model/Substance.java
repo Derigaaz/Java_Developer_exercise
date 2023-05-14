@@ -1,7 +1,10 @@
 package com.pietrowski.exercise.model;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +29,8 @@ import java.util.List;
 public class Substance implements Serializable {
     @Id
     private String indexNo;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     private String intChemId;
     private String ecNo;
     private String casNo;
