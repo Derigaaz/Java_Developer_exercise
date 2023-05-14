@@ -1,14 +1,12 @@
 package com.pietrowski.exercise.model;
 
-import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,12 +23,13 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @ToString
-@EqualsAndHashCode
 public class Substance implements Serializable {
     @Id
     private String indexNo;
+    @OneToMany(mappedBy="substance")
+    @ToString.Exclude
+    private List<SubstanceUpdateEntry> substanceUpdates;
     @Lob
-    @Basic(fetch = FetchType.LAZY)
     private String intChemId;
     private String ecNo;
     private String casNo;

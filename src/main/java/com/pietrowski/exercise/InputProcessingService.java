@@ -41,14 +41,14 @@ public class InputProcessingService {
                     Substance updatedSubstance = substanceDAO.update(newSubstanceEntry);
                     if (!(updatedSubstance.equals(substanceBeforeUpdate) || substanceBeforeUpdate == null)) {
                         SubstanceUpdateEntry updateEntry = SubstanceUpdateEntry.builder()
-                                .indexNo(updatedSubstance.getIndexNo())
+                                .substance(updatedSubstance)
                                 .updateTime(LocalDateTime.now())
                                 .removedHazardClasses(findDifferencesBetweenLists(substanceBeforeUpdate.getHazardClasses(), updatedSubstance.getHazardClasses()))
                                 .addedHazardClasses(findDifferencesBetweenLists(updatedSubstance.getHazardClasses(), substanceBeforeUpdate.getHazardClasses()))
                                 .removedHazardStatementCodes(findDifferencesBetweenLists(substanceBeforeUpdate.getHazardStatementCodes(), updatedSubstance.getHazardStatementCodes()))
                                 .addedHazardStatementCodes(findDifferencesBetweenLists(updatedSubstance.getHazardStatementCodes(), substanceBeforeUpdate.getHazardStatementCodes()))
                                 .build();
-                        substanceUpdateEntryDAO.create(updateEntry);
+                        substanceUpdateEntryDAO.update(updateEntry);
                     }
                 }
 
