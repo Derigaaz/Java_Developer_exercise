@@ -1,6 +1,7 @@
 package com.pietrowski.exercise;
 
 import com.pietrowski.exercise.model.Substance;
+import com.pietrowski.exercise.model.SubstanceUpdateEntry;
 import com.pietrowski.exercise.model.dao.SubstanceDAO;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -8,10 +9,11 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+
 import java.util.Optional;
 
 @Service
@@ -28,12 +30,23 @@ public class InputProcessingService {
         for (int index = firstRow + 6; index <= lastRow; index++) {
             Optional<Row> row = Optional.ofNullable(sheet.getRow(index));
             Optional<Substance> rowSubstance = row.map(InputProcessingService::readSubstanceValues);
-//            rowSubstance.ifPresent(substance -> substanceDAO.update(substance));
             if(rowSubstance.isPresent()) {
-                Substance updatedSubstance = substanceDAO.update(rowSubstance.get());
-                if (!(updatedSubstance.equals(rowSubstance.get()))) {
-
+                Substance newSubstanceEntry = rowSubstance.get();
+                if(!substances.contains(newSubstanceEntry)) {
+                    Substance substanceBeforeUpdate = substances.stream().filter(substance -> substance.getIndexNo().equals(newSubstanceEntry.getIndexNo())).findFirst().orElseGet(Substance::new);
+                    Substance updatedSubstance = substanceDAO.update(newSubstanceEntry);
+                    if (!(updatedSubstance.equals(rowSubstance.get()))) {
+                        SubstanceUpdateEntry.builder()
+                                .indexNo(updatedSubstance.getIndexNo())
+                                .updateTime(LocalDateTime.now())
+                                .removedHazardClasses(findDifferencesBetweenLists(substanceBeforeUpdate.getHazardClasses(), updatedSubstance.getHazardClasses()))
+                                .addedHazardClasses(findDifferencesBetweenLists(updatedSubstance.getHazardClasses(), substanceBeforeUpdate.getHazardClasses()))
+                                .removedHazardClasses(findDifferencesBetweenLists(substanceBeforeUpdate.getHazardClasses(), updatedSubstance.getHazardClasses()))
+                                .addedHazardClasses(findDifferencesBetweenLists(updatedSubstance.getHazardClasses(), substanceBeforeUpdate.getHazardClasses()))
+                                .build();
+                    }
                 }
+
             }
         }
         return substances;
@@ -56,5 +69,11 @@ public class InputProcessingService {
 
     private static List<String> getStringCellListOfValues(Row row, int cellNo) {
         return Arrays.stream(row.getCell(cellNo, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue().split("\n")).toList();
+    }
+
+    private static List<String> findDifferencesBetweenLists(List<String> listOne, List<String> listTwo) {
+        List<String> differences = new ArrayList<>(listOne);
+        differences.removeAll(listTwo);
+        return differences;
     }
 }
