@@ -37,16 +37,16 @@ public class InputProcessingService {
             if(rowSubstance.isPresent()) {
                 Substance newSubstanceEntry = rowSubstance.get();
                 if(!substances.contains(newSubstanceEntry)) {
-                    Substance substanceBeforeUpdate = substances.stream().filter(substance -> substance.getIndexNo().equals(newSubstanceEntry.getIndexNo())).findFirst().orElseGet(Substance::new);
+                    Substance substanceBeforeUpdate = substances.stream().filter(substance -> substance.getIndexNo().equals(newSubstanceEntry.getIndexNo())).findAny().orElse(null);
                     Substance updatedSubstance = substanceDAO.update(newSubstanceEntry);
-                    if (!(updatedSubstance.equals(substanceBeforeUpdate))) {
+                    if (!(updatedSubstance.equals(substanceBeforeUpdate) || substanceBeforeUpdate == null)) {
                         SubstanceUpdateEntry updateEntry = SubstanceUpdateEntry.builder()
                                 .indexNo(updatedSubstance.getIndexNo())
                                 .updateTime(LocalDateTime.now())
                                 .removedHazardClasses(findDifferencesBetweenLists(substanceBeforeUpdate.getHazardClasses(), updatedSubstance.getHazardClasses()))
                                 .addedHazardClasses(findDifferencesBetweenLists(updatedSubstance.getHazardClasses(), substanceBeforeUpdate.getHazardClasses()))
                                 .removedHazardStatementCodes(findDifferencesBetweenLists(substanceBeforeUpdate.getHazardStatementCodes(), updatedSubstance.getHazardStatementCodes()))
-                                .removedHazardStatementCodes(findDifferencesBetweenLists(updatedSubstance.getHazardStatementCodes(), substanceBeforeUpdate.getHazardStatementCodes()))
+                                .addedHazardStatementCodes(findDifferencesBetweenLists(updatedSubstance.getHazardStatementCodes(), substanceBeforeUpdate.getHazardStatementCodes()))
                                 .build();
                         substanceUpdateEntryDAO.create(updateEntry);
                     }
