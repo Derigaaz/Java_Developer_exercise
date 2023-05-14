@@ -1,6 +1,9 @@
 package com.pietrowski.exercise;
 
 import com.pietrowski.exercise.model.Substance;
+import com.pietrowski.exercise.model.SubstanceUpdateEntry;
+import com.pietrowski.exercise.model.dao.SubstanceDAO;
+import com.pietrowski.exercise.model.dao.SubstanceUpdateEntryDAO;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
@@ -24,6 +27,12 @@ public class ExerciseApplication implements CommandLineRunner {
     @Autowired
     InputProcessingService inputProcessingService;
 
+    @Autowired
+    SubstanceDAO substanceDAO;
+
+    @Autowired
+    SubstanceUpdateEntryDAO substanceUpdateEntryDAO;
+
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(ExerciseApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
@@ -33,7 +42,9 @@ public class ExerciseApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws IOException {
         while (true) {
+            System.out.println("Type 'substances' to display all substances currently in database or 'updates' to display history of all updates");
             System.out.println("Type 'quit' to exit the application or 'input' to input a new Excel file to process.");
+            System.out.println("Type 'clear' to clear database entries - THIS ACTION CANNOT BE REVERTED!");
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(System.in));
             String operation;
@@ -50,6 +61,12 @@ public class ExerciseApplication implements CommandLineRunner {
                         substances.stream().map(Substance::toString).forEachOrdered(System.out::println);
                         ExcelProcessingService.closeInputStream(inputStream);
                     }
+                }
+                case "substances" -> substanceDAO.findAll().stream().map(Substance::toString).forEachOrdered(System.out::println);
+                case "updates" -> substanceUpdateEntryDAO.findAll().stream().map(SubstanceUpdateEntry::toString).forEachOrdered(System.out::println);
+                case "clear" -> {
+                    substanceDAO.deleteAll();
+                    substanceUpdateEntryDAO.deleteAll();
                 }
                 default -> System.out.println("Unrecognized operation.");
             }
