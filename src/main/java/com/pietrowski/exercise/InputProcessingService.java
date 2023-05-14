@@ -60,16 +60,20 @@ public class InputProcessingService {
     public static Substance readSubstanceValues(Row row) {
         return Substance.builder()
                 .indexNo(getStringCellValue(row, 0))
-                .intChemId(getStringCellValue(row, 1))
-                .ecNo(getStringCellValue(row, 2))
-                .casNo(getStringCellValue(row, 3))
+                .intChemId(getStringCellValueWithRemovedLineBreaks(row, 1))
+                .ecNo(getStringCellValueWithRemovedLineBreaks(row, 2))
+                .casNo(getStringCellValueWithRemovedLineBreaks(row, 3))
                 .hazardClasses(getStringCellListOfValues(row, 4))
                 .hazardStatementCodes(getStringCellListOfValues(row, 5))
                 .build();
     }
 
     private static String getStringCellValue(Row row, int cellNo) {
-        return row.getCell(cellNo, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue();
+        return row.getCell(cellNo, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue().trim();
+    }
+
+    private static String getStringCellValueWithRemovedLineBreaks(Row row, int cellNo) {
+        return row.getCell(cellNo, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue().trim().replaceAll("[\n\r]", ", ");
     }
 
     private static List<String> getStringCellListOfValues(Row row, int cellNo) {
