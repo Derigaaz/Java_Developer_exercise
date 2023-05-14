@@ -3,6 +3,7 @@ package com.pietrowski.exercise;
 import com.pietrowski.exercise.model.Substance;
 import com.pietrowski.exercise.model.SubstanceUpdateEntry;
 import com.pietrowski.exercise.model.dao.SubstanceDAO;
+import com.pietrowski.exercise.model.dao.SubstanceUpdateEntryDAO;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -22,6 +23,9 @@ public class InputProcessingService {
     @Autowired
     SubstanceDAO substanceDAO;
 
+    @Autowired
+    SubstanceUpdateEntryDAO substanceUpdateEntryDAO;
+
     public List<Substance> createListOfSubstancesFromWorkbook(Workbook workbook) {
         Sheet sheet = workbook.getSheet("ATP_18");
         List<Substance> substances = substanceDAO.findAll();
@@ -35,15 +39,16 @@ public class InputProcessingService {
                 if(!substances.contains(newSubstanceEntry)) {
                     Substance substanceBeforeUpdate = substances.stream().filter(substance -> substance.getIndexNo().equals(newSubstanceEntry.getIndexNo())).findFirst().orElseGet(Substance::new);
                     Substance updatedSubstance = substanceDAO.update(newSubstanceEntry);
-                    if (!(updatedSubstance.equals(rowSubstance.get()))) {
-                        SubstanceUpdateEntry.builder()
+                    if (!(updatedSubstance.equals(substanceBeforeUpdate))) {
+                        SubstanceUpdateEntry updateEntry = SubstanceUpdateEntry.builder()
                                 .indexNo(updatedSubstance.getIndexNo())
                                 .updateTime(LocalDateTime.now())
                                 .removedHazardClasses(findDifferencesBetweenLists(substanceBeforeUpdate.getHazardClasses(), updatedSubstance.getHazardClasses()))
                                 .addedHazardClasses(findDifferencesBetweenLists(updatedSubstance.getHazardClasses(), substanceBeforeUpdate.getHazardClasses()))
-                                .removedHazardClasses(findDifferencesBetweenLists(substanceBeforeUpdate.getHazardClasses(), updatedSubstance.getHazardClasses()))
-                                .addedHazardClasses(findDifferencesBetweenLists(updatedSubstance.getHazardClasses(), substanceBeforeUpdate.getHazardClasses()))
+                                .removedHazardStatementCodes(findDifferencesBetweenLists(substanceBeforeUpdate.getHazardStatementCodes(), updatedSubstance.getHazardStatementCodes()))
+                                .removedHazardStatementCodes(findDifferencesBetweenLists(updatedSubstance.getHazardStatementCodes(), substanceBeforeUpdate.getHazardStatementCodes()))
                                 .build();
+                        substanceUpdateEntryDAO.create(updateEntry);
                     }
                 }
 
@@ -72,7 +77,10 @@ public class InputProcessingService {
     }
 
     private static List<String> findDifferencesBetweenLists(List<String> listOne, List<String> listTwo) {
-        List<String> differences = new ArrayList<>(listOne);
+        List<String> differences = listOne != null ? new ArrayList<>(listOne): new ArrayList<>();
+        if (listTwo == null) {
+            return differences;
+        }
         differences.removeAll(listTwo);
         return differences;
     }
