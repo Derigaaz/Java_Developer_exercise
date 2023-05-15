@@ -1,5 +1,6 @@
 package com.pietrowski.exercise.model.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
@@ -26,7 +27,7 @@ import java.util.List;
 public class Substance implements Serializable {
     @Id
     private String indexNo;
-    @OneToMany(mappedBy="substance")
+    @OneToMany(mappedBy="substance", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<SubstanceUpdateEntry> substanceUpdates;
     @Lob

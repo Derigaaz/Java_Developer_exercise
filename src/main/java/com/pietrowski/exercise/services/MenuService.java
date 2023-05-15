@@ -58,7 +58,6 @@ public class MenuService {
     }
 
     private void executeDatabaseClearing() {
-        substanceUpdateEntryService.deleteAll();
         substanceService.deleteAll();
     }
 

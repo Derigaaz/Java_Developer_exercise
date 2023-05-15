@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.List;
@@ -40,6 +41,7 @@ public abstract class AbstractJpaDAO<T extends Serializable> {
         entityManager.remove(entity);
     }
 
+    @Transactional
     public void deleteAll() {
         List<T> entities = findAll();
         entities.forEach(this::delete);
