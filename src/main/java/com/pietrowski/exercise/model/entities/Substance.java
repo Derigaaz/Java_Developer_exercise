@@ -31,7 +31,9 @@ public class Substance implements Serializable {
     private List<SubstanceUpdateEntry> substanceUpdates;
     @Lob
     private String intChemId;
+    @Lob
     private String ecNo;
+    @Lob
     private String casNo;
     private List<String> hazardClasses;
     private List<String> hazardStatementCodes;
