@@ -3,6 +3,7 @@ package com.pietrowski.exercise.model.services;
 import com.pietrowski.exercise.model.dao.SubstanceUpdateEntryDAO;
 import com.pietrowski.exercise.model.entities.Substance;
 import com.pietrowski.exercise.model.entities.SubstanceUpdateEntry;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +14,11 @@ import java.util.List;
 
 @Service
 @Transactional
+@Setter
 public class SubstanceUpdateEntryService {
 
     @Autowired
-    SubstanceUpdateEntryDAO substanceUpdateEntryDAO;
+    private SubstanceUpdateEntryDAO substanceUpdateEntryDAO;
 
     public void update(SubstanceUpdateEntry entry) {
         substanceUpdateEntryDAO.update(entry);

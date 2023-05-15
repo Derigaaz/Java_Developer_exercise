@@ -3,6 +3,7 @@ package com.pietrowski.exercise.model.services;
 import com.pietrowski.exercise.model.dao.SubstanceDAO;
 import com.pietrowski.exercise.model.entities.Substance;
 import com.pietrowski.exercise.model.entities.SubstanceUpdateEntry;
+import lombok.Setter;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,12 +14,13 @@ import java.util.List;
 
 @Service
 @Transactional
+@Setter
 public class SubstanceService {
 
     @Autowired
-    SubstanceDAO substanceDAO;
+    private SubstanceDAO substanceDAO;
     @Autowired
-    SubstanceUpdateEntryService substanceUpdateEntryService;
+    private SubstanceUpdateEntryService substanceUpdateEntryService;
 
     public static Substance buildSubstance(Row row) {
         return Substance.builder()

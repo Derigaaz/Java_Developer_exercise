@@ -21,32 +21,32 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class SubstanceServiceTest {
 
-    public static final String INDEX_NO = "indexNo";
-    public static final String INT_CHEM_ID = "intChemId";
-    public static final String EC_NO = "ecNo";
-    public static final String CAS_NO = "casNo";
-    public static final String HAZARD_CLASSES = "hazardClasses";
-    public static final String HAZARD_STATEMENT_CODES = "hazardStatementCodes";
-    SubstanceService substanceService = new SubstanceService();
+    private static final String INDEX_NO = "indexNo";
+    private static final String INT_CHEM_ID = "intChemId";
+    private static final String EC_NO = "ecNo";
+    private static final String CAS_NO = "casNo";
+    private static final String HAZARD_CLASSES = "hazardClasses";
+    private static final String HAZARD_STATEMENT_CODES = "hazardStatementCodes";
+    private final SubstanceService substanceService = new SubstanceService();
 
     @Mock
-    SubstanceDAO substanceDAO;
+    private SubstanceDAO substanceDAO;
 
     @Mock
-    Row row;
+    private Row row;
 
     @Mock
-    Cell cell0;
+    private Cell cell0;
     @Mock
-    Cell cell1;
+    private Cell cell1;
     @Mock
-    Cell cell2;
+    private Cell cell2;
     @Mock
-    Cell cell3;
+    private Cell cell3;
     @Mock
-    Cell cell4;
+    private Cell cell4;
     @Mock
-    Cell cell5;
+    private Cell cell5;
 
     @Mock
     SubstanceUpdateEntryService substanceUpdateEntryService;
@@ -87,7 +87,7 @@ class SubstanceServiceTest {
 
     @Test
     void findAll() {
-        substanceService.substanceDAO = substanceDAO;
+        substanceService.setSubstanceDAO(substanceDAO);
         //given
         when(substanceDAO.findAll()).thenReturn(List.of(new Substance()));
         //when
@@ -100,7 +100,7 @@ class SubstanceServiceTest {
 
     @Test
     void deleteAll() {
-        substanceService.substanceDAO = substanceDAO;
+        substanceService.setSubstanceDAO(substanceDAO);
         //given
         doNothing().when(substanceDAO).deleteAll();
         //when

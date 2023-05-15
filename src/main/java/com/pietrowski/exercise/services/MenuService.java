@@ -18,7 +18,7 @@ import static java.lang.System.exit;
 
 @Service
 public class MenuService {
-    public static final String PATH_TO_FILE_REQUEST_MESSAGE = "Please enter path to the file you wish to process.";
+    private static final String PATH_TO_FILE_REQUEST_MESSAGE = "Please enter path to the file you wish to process.";
     private static final String MAIN_MENU_MESSAGE = """
             Type command to execute:
             'substances': displays all substances currently in database
@@ -29,14 +29,12 @@ public class MenuService {
             'quit': exits the application
             """;
     @Autowired
-    WorkbookService workbookService;
-
+    private WorkbookService workbookService;
     @Autowired
-    SubstanceService substanceService;
-
+    private SubstanceService substanceService;
     @Autowired
-    SubstanceUpdateEntryService substanceUpdateEntryService;
-    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    private SubstanceUpdateEntryService substanceUpdateEntryService;
+    private final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public void runMainMenu() throws IOException {
         while (true) {

@@ -12,7 +12,7 @@ import java.io.IOException;
 @SpringBootApplication
 public class ExerciseApplication implements CommandLineRunner {
     @Autowired
-    MenuService menuService;
+    private MenuService menuService;
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(ExerciseApplication.class);
