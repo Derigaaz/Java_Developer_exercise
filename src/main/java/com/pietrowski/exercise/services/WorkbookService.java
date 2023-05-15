@@ -118,6 +118,7 @@ public class WorkbookService {
         cellStyle.setWrapText(true);
         return cellStyle;
     }
+
     private static void setCellStyleForRow(Row row, CellStyle headerStyle) {
         for (int index = 0; index <= 7; index++) {
             row.getCell(index).setCellStyle(headerStyle);
