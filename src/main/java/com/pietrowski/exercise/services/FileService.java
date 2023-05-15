@@ -17,7 +17,7 @@ public class FileService {
         try {
             return new FileInputStream(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error opening the file.");
         }
         return null;
     }
@@ -26,7 +26,7 @@ public class FileService {
         try {
             return new XSSFWorkbook(inputStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error trying to open Workbook. Is the chosen file of appropriate type?");
         }
         return null;
     }

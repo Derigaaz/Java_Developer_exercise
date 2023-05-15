@@ -31,6 +31,18 @@ public class SubstanceService {
                 .build();
     }
 
+    private static String getStringCellValue(Row row, int cellNo) {
+        return row.getCell(cellNo, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue().trim();
+    }
+
+    private static String getStringCellValueWithRemovedLineBreaks(Row row, int cellNo) {
+        return row.getCell(cellNo, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue().trim().replaceAll("[\n\r]", ", ");
+    }
+
+    private static List<String> getStringCellListOfValues(Row row, int cellNo) {
+        return Arrays.stream(row.getCell(cellNo, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue().split("\n")).toList();
+    }
+
     public void processNewSubstance(List<Substance> substances, Substance newSubstanceEntry) {
         if (!substances.contains(newSubstanceEntry)) {
             Substance substanceBeforeUpdate = substances.stream().filter(substance -> substance.getIndexNo().equals(newSubstanceEntry.getIndexNo())).findAny().orElse(null);
@@ -42,24 +54,12 @@ public class SubstanceService {
         }
     }
 
-    public List<Substance> findAll(){
+    public List<Substance> findAll() {
         return substanceDAO.findAll();
     }
 
-    public void deleteAll(){
+    public void deleteAll() {
         substanceDAO.deleteAll();
-    }
-
-    private static String getStringCellValue(Row row, int cellNo) {
-        return row.getCell(cellNo, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue().trim();
-    }
-
-    private static String getStringCellValueWithRemovedLineBreaks(Row row, int cellNo) {
-        return row.getCell(cellNo, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue().trim().replaceAll("[\n\r]", ", ");
-    }
-
-    private static List<String> getStringCellListOfValues(Row row, int cellNo) {
-        return Arrays.stream(row.getCell(cellNo, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue().split("\n")).toList();
     }
 
 }

@@ -23,12 +23,6 @@ public class WorkbookService {
     @Autowired
     SubstanceService substanceService;
 
-    private static void setCellStyleForRow(Row row, CellStyle headerStyle) {
-        for (int index = 0; index <= 7; index++) {
-            row.getCell(index).setCellStyle(headerStyle);
-        }
-    }
-
     public void processWorkbook(Workbook workbook) {
         Sheet sheet = workbook.getSheet("ATP_18");
         List<Substance> substances = substanceService.findAll();
@@ -36,15 +30,6 @@ public class WorkbookService {
         int lastRow = sheet.getLastRowNum();
         for (int index = firstRow + 6; index <= lastRow; index++) {
             processRowFromInput(sheet, substances, index);
-        }
-    }
-
-    private void processRowFromInput(Sheet sheet, List<Substance> substances, int index) {
-        Optional<Row> row = Optional.ofNullable(sheet.getRow(index));
-        Optional<Substance> rowSubstance = row.map(SubstanceService::buildSubstance);
-        if (rowSubstance.isPresent()) {
-            Substance newSubstanceEntry = rowSubstance.get();
-            substanceService.processNewSubstance(substances, newSubstanceEntry);
         }
     }
 
@@ -58,6 +43,15 @@ public class WorkbookService {
         CellStyle cellStyle = createCellStyle(workbook);
         IntStream.range(0, updateEntries.size()).forEachOrdered(i -> createDataRow(workbook, sheet, i + 1, updateEntries.get(i), cellStyle));
         return workbook;
+    }
+
+    private void processRowFromInput(Sheet sheet, List<Substance> substances, int index) {
+        Optional<Row> row = Optional.ofNullable(sheet.getRow(index));
+        Optional<Substance> rowSubstance = row.map(SubstanceService::buildSubstance);
+        if (rowSubstance.isPresent()) {
+            Substance newSubstanceEntry = rowSubstance.get();
+            substanceService.processNewSubstance(substances, newSubstanceEntry);
+        }
     }
 
     private void createHeader(XSSFWorkbook workbook, Sheet sheet) {
@@ -124,6 +118,10 @@ public class WorkbookService {
         cellStyle.setWrapText(true);
         return cellStyle;
     }
-
+    private static void setCellStyleForRow(Row row, CellStyle headerStyle) {
+        for (int index = 0; index <= 7; index++) {
+            row.getCell(index).setCellStyle(headerStyle);
+        }
+    }
 
 }
